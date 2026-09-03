@@ -1,1368 +1,177 @@
-<!--
-=======================================================================
-  M A I A 🌷 Boutique · Flores y Globos 🎈 — SISTEMA INTRANET v1.0
-  Index.html | Google Apps Script
-  → Este archivo va en Apps Script como "Index.html"
-  → Requiere Codigo.gs en el mismo proyecto
-=======================================================================
--->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-<style>
-@font-face{
-  font-family:'Florania';
-  src:url('https://fonts.cdnfonts.com/s/91496/Florania.woff') format('woff');
-  font-weight:normal; font-style:normal; font-display:swap;
-}
-.maia-font{font-family:'Florania','Playfair Display',Georgia,serif;font-weight:normal;letter-spacing:4px}
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --rosa:#c8a0c8; --viola:#7b4f7b; --violeta:#4a2c4a;
-  --crema:#faf5fb; --gris:#f0e8f5; --texto:#4a2c4a;
-  --verde:#27ae60; --rojo:#c0392b; --oro:#d4a017; --radio:14px;
-}
-body{font-family:Georgia,serif;background:var(--crema);color:var(--texto);min-height:100vh}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-thumb{background:var(--rosa);border-radius:3px}
-
-/* ── BIENVENIDA ─────────────────────────────────────────── */
-#bienvenida{min-height:38vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:linear-gradient(160deg,var(--violeta) 0%,#6e3f6e 45%,#9c6f9c 85%,var(--rosa) 100%);
-  padding:34px 20px;text-align:center}
-.bv-logo{width:96px;height:96px;border-radius:50%;border:4px solid rgba(255,255,255,.4);
-  object-fit:cover;margin-bottom:14px;box-shadow:0 8px 26px rgba(0,0,0,.3)}
-.bv-tag{display:inline-block;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4);
-  padding:4px 16px;border-radius:20px;font-size:11px;font-family:Arial,sans-serif;letter-spacing:2px;
-  text-transform:uppercase;margin-bottom:10px}
-.bv-titulo{color:#fff;font-size:clamp(22px,5vw,38px);letter-spacing:3px;margin-bottom:6px;
-  font-family:'Florania','Playfair Display',Georgia,serif;font-weight:normal}
-.bv-sub{color:rgba(255,255,255,.9);font-size:15px;font-family:Arial,sans-serif}
-.bv-fecha{color:rgba(255,255,255,.7);font-size:12px;margin-top:6px;font-family:Arial,sans-serif}
-
-/* ── MENÚ PRINCIPAL ─────────────────────────────────────── */
-#menu{max-width:760px;margin:-28px auto 0;padding:0 18px 40px;position:relative;z-index:2}
-.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
-.menu-btn{background:#fff;border:1px solid var(--gris);border-radius:var(--radio);padding:22px 14px;
-  display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;
-  box-shadow:0 4px 18px rgba(74,44,74,.10);transition:.2s;font-family:Arial,sans-serif}
-.menu-btn:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(74,44,74,.18);border-color:var(--rosa)}
-.menu-btn.disabled{opacity:.5;cursor:not-allowed}
-.menu-btn .ic{width:46px;height:46px;border-radius:50%;background:var(--gris);display:flex;
-  align-items:center;justify-content:center;font-size:22px}
-.menu-btn span{font-size:13px;font-weight:700;color:var(--violeta);text-align:center;letter-spacing:.3px}
-
-/* ── MODALES ─────────────────────────────────────────────── */
-.overlay{position:fixed;inset:0;background:rgba(74,44,74,.55);display:none;align-items:flex-start;
-  justify-content:center;padding:26px 14px;overflow-y:auto;z-index:500}
-.overlay.open{display:flex}
-.modal{background:#fff;border-radius:18px;max-width:560px;width:100%;padding:26px 24px 24px;
-  box-shadow:0 20px 60px rgba(0,0,0,.35);font-family:Arial,sans-serif;animation:pop .18s ease}
-.modal.wide{max-width:760px;max-height:88vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--rosa) var(--gris)}
-.modal.wide::-webkit-scrollbar{width:10px}
-.modal.wide::-webkit-scrollbar-track{background:var(--gris);border-radius:8px}
-.modal.wide::-webkit-scrollbar-thumb{background:var(--rosa);border-radius:8px}
-@keyframes pop{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal h2{font-family:'Florania','Playfair Display',Georgia,serif;color:var(--violeta);font-size:22px;
-  letter-spacing:1px;margin-bottom:4px}
-.modal .sub{font-size:12.5px;color:#8a7a8a;margin-bottom:18px}
-.close-x{position:absolute;top:16px;right:20px;background:none;border:none;font-size:20px;color:var(--viola);
-  cursor:pointer}
-.modal-wrap{position:relative}
-.campo{margin-bottom:14px}
-.campo label{display:block;font-size:12px;font-weight:700;color:var(--viola);margin-bottom:5px;
-  text-transform:uppercase;letter-spacing:.4px}
-.campo label.req::after{content:' *';color:var(--rojo)}
-.campo input,.campo select,.campo textarea{width:100%;border:1.5px solid var(--gris);border-radius:10px;
-  padding:10px 12px;font-size:14px;font-family:Arial,sans-serif;color:var(--texto);background:#fff}
-.campo input:focus,.campo select:focus,.campo textarea:focus{outline:none;border-color:var(--rosa)}
-.campo input:disabled,.campo select:disabled{background:var(--gris);color:#8a7a8a}
-.fila2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.fila3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:24px;
-  padding:12px 22px;font-weight:700;font-size:14px;cursor:pointer;font-family:Arial,sans-serif;transition:.2s}
-.btn-primary{background:var(--violeta);color:#fff}
-.btn-primary:hover{background:#3a223a}
-.btn-secundario{background:var(--gris);color:var(--violeta)}
-.btn-secundario:hover{background:#e3d6ea}
-.btn-block{width:100%;margin-top:6px}
-.msg{font-size:13px;border-radius:10px;padding:10px 12px;margin-bottom:14px;display:none}
-.msg.ok{display:block;background:#e8f8ef;color:var(--verde);border:1px solid #bfe9cf}
-.msg.err{display:block;background:#fdecea;color:var(--rojo);border:1px solid #f5c6c0}
-.toggle-si-no{display:flex;gap:10px}
-.toggle-si-no button{flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--gris);background:#fff;
-  font-weight:700;cursor:pointer;color:var(--texto)}
-.toggle-si-no button.activo{background:var(--violeta);color:#fff;border-color:var(--violeta)}
-
-/* ── TABLA REMISIÓN ──────────────────────────────────────── */
-.tabla-art{width:100%;border-collapse:collapse;margin-top:6px;font-size:12.5px}
-.tabla-art th{background:var(--gris);color:var(--violeta);padding:8px 6px;text-align:left}
-.tabla-art td{padding:6px;border-bottom:1px solid var(--gris)}
-.tabla-art input{width:100%;border:1px solid var(--gris);border-radius:6px;padding:6px;font-size:12.5px}
-.tabla-art .del-fila{background:none;border:none;color:var(--rojo);font-size:16px;cursor:pointer}
-.totales{margin-top:14px;background:var(--crema);border-radius:12px;padding:14px 16px;font-size:13.5px}
-.totales div{display:flex;justify-content:space-between;padding:3px 0}
-.totales .total-final{font-weight:700;color:var(--violeta);font-size:15px;border-top:1px dashed var(--rosa);
-  margin-top:6px;padding-top:8px}
-
-/* ── TICKET 80mm ─────────────────────────────────────────── */
-#ticket{width:100%;max-width:80mm;box-sizing:border-box;margin:0 auto;padding:6px 4mm;font-family:'Courier New',monospace;font-size:11px;color:#000}
-#ticket div,#ticket td{word-break:break-word}
-#ticket h3{text-align:center;font-size:13px;margin-bottom:2px}
-#ticket .centro{text-align:center}
-#ticket hr{border:none;border-top:1px dashed #000;margin:6px 0}
-#ticket table{width:100%;border-collapse:collapse}
-#ticket td{font-size:10.5px;vertical-align:top;padding:1px 0}
-@media print{
-  @page{size:80mm auto;margin:0}
-  body *{visibility:hidden}
-  #ticket,#ticket *{visibility:visible}
-  #ticket{position:absolute;top:0;left:0;width:80mm;padding:0 4mm;box-sizing:border-box;
-    transform:scale(0.85);transform-origin:top left}
-}
-.aviso-impresion{background:#fff3cd;border:1px solid #e0c060;color:#5a4a10;font-size:11px;
-  padding:10px 12px;margin-bottom:12px;border-radius:8px;font-family:Arial,sans-serif;line-height:1.5}
-
-/* ── Confirmación tras guardar remisión ─────────────────── */
-.confirm-box{text-align:center}
-.confirm-box .ic{font-size:38px;margin-bottom:6px}
-.confirm-box .btns{display:flex;gap:10px;margin-top:18px}
-.confirm-box .btns .btn{flex:1}
-
-/* ── Tabla Remisiones ────────────────────────────────────── */
-.tabs{display:flex;gap:8px;margin-bottom:14px}
-.tab-btn{flex:1;padding:10px;border-radius:10px;border:1.5px solid var(--gris);background:#fff;
-  font-weight:700;cursor:pointer;color:var(--texto);font-family:Arial,sans-serif}
-.tab-btn.activo{background:var(--violeta);color:#fff;border-color:var(--violeta)}
-.tr-toolbar{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.tr-toolbar input{flex:1;min-width:180px;border:1.5px solid var(--gris);border-radius:10px;
-  padding:10px 12px;font-size:13.5px;font-family:Arial,sans-serif}
-.tr-tabla-wrap{max-height:50vh;overflow:auto;border:1px solid var(--gris);border-radius:10px}
-.tr-tabla{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
-.tr-tabla th{background:var(--gris);color:var(--violeta);padding:7px 8px;position:sticky;top:0;text-align:left}
-.tr-tabla td{padding:6px 8px;border-bottom:1px solid var(--gris)}
-.tr-tabla tr:hover td{background:#faf5fb}
-.tr-vacio{padding:20px;text-align:center;color:#8a7a8a;font-size:13px}
-
-@media(max-width:520px){.fila2,.fila3{grid-template-columns:1fr}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WhatsApp - TIENDA MAIA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --wa-green: #25D366; --maia-purple: #a349a4;
+      --radius: 18px;
+    }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
+      min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 0;
+    }
+    .bg-deco { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .petal { position: absolute; font-size: 2rem; opacity: 0.35; animation: float linear infinite; }
+    @keyframes float {
+      0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.35; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+    .card {
+      position: relative; z-index: 10; background: #fff; border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18); max-width: 360px; width: 95%; overflow: hidden;
+    }
+    .card-header {
+      background: linear-gradient(160deg, #075E54 0%, var(--wa-green) 100%);
+      padding: 30px; text-align: center; color: white;
+    }
+    .wa-icon {
+      width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 10px;
+      border: 2px solid rgba(255,255,255,0.35);
+    }
+    .card-body { padding: 30px; text-align: center; }
+    .sucursal-wrap { display: flex; gap: 10px; margin: 20px 0; }
+    .btn-suc {
+      flex: 1; padding: 12px; border: 2px solid var(--maia-purple); border-radius: 12px;
+      background: white; color: var(--maia-purple); font-weight: 700; cursor: pointer; transition: 0.3s;
+    }
+    .btn-suc.active { background: var(--maia-purple); color: white; }
+    /* ── Campos opcionales ── */
+    .optional-fields {
+      display: flex; flex-direction: column; gap: 10px; margin-bottom: 6px;
+    }
+    .field-wrap {
+      position: relative;
+    }
+    .field-wrap label {
+      position: absolute; top: 50%; left: 13px; transform: translateY(-50%);
+      font-size: 0.78rem; font-weight: 700; color: #aaa;
+      pointer-events: none; transition: 0.2s;
+    }
+    .field-wrap input {
+      width: 100%; 
+      padding: 20px 13px 10px 13px; /* AUMENTADO EL ALTO AQUÍ */
+      border: 2px solid #e0e0e0; border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 600;
+      color: #333; outline: none; transition: border-color 0.25s;
+      background: #fafafa;
+    }
+    .field-wrap input:focus {
+      border-color: var(--maia-purple);
+      background: #fff;
+    }
+    .field-wrap input:focus + label,
+    .field-wrap input:not(:placeholder-shown) + label {
+      top: 8px; transform: none; font-size: 0.65rem; color: var(--maia-purple);
+    }
+    .field-wrap input::placeholder { color: transparent; }
+    .optional-hint {
+      font-size: 0.72rem; color: #bbb; margin-bottom: 14px;
+      letter-spacing: 0.3px;
+    }
+    .card-footer { display: flex; gap: 12px; padding: 0 30px 30px; }
+    .btn-accept {
+      flex: 1.5; background: var(--wa-green); color: white; border: none; padding: 15px;
+      border-radius: 15px; font-weight: 800; cursor: pointer;
+    }
+    .btn-accept:disabled { background: #ccc; cursor: not-allowed; }
+    .btn-close { flex: 1; background: #e0e0e0; border: none; border-radius: 15px; color: #555; font-weight: 700; cursor: pointer; }
+    .maia-label { font-size: 10px; color: #bbb; text-align: center; padding-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; }
+  </style>
 </head>
 <body>
-
-<div id="bienvenida">
-  <img class="bv-logo" src="https://raw.githubusercontent.com/MAIA-Boutique-Floral/maia-assets/main/MAIA-BRAND.jpg" alt="MAIA">
-  <div class="bv-tag">Sistema Intranet</div>
-  <div class="bv-titulo maia-font">M A I A 🌷</div>
-  <div class="bv-sub" id="bv-saludo">Bienvenido/a</div>
-  <div class="bv-fecha" id="bv-fecha"></div>
-</div>
-
-<div id="menu">
-  <div class="menu-grid">
-    <div class="menu-btn" onclick="abrirModal('modalEntrada')">
-      <div class="ic">🟢</div><span>Registrar Entrada</span>
+<div class="bg-deco" id="bgDeco"></div>
+<div class="card">
+  <div class="card-header">
+    <div class="wa-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </div>
-    <div class="menu-btn" onclick="abrirModal('modalSalida')">
-      <div class="ic">🔴</div><span>Registrar Salida</span>
-    </div>
-    <div class="menu-btn" onclick="abrirGenerarRemision()">
-      <div class="ic">🧾</div><span>Generar Remisión</span>
-    </div>
-    <div class="menu-btn" onclick="abrirTablaRemisiones()">
-      <div class="ic">📊</div><span>Tabla Remisiones</span>
-    </div>
-    <div class="menu-btn" onclick="abrirFidelizacion()">
-      <div class="ic">💳</div><span>Programa de Fidelización</span>
-    </div>
-    <div class="menu-btn disabled" title="Próximamente">
-      <div class="ic">⚙️</div><span>Procesos</span>
-    </div>
-    <div class="menu-btn" onclick="window.open('https://www.google.com/maps','_blank')">
-      <div class="ic">📍</div><span>Google Maps</span>
-    </div>
-    <!-- Página MAIA: pendiente el enlace definitivo, se actualiza en la línea de abajo -->
-    <div class="menu-btn" onclick="irPaginaMaia()">
-      <div class="ic">🌷</div><span>Página MAIA</span>
-    </div>
+    <p style="font-size: 0.8rem; font-weight: 600;">Contáctanos directo por WhatsApp</p>
   </div>
-</div>
-
-<!-- ═══════════ MODAL: REGISTRAR ENTRADA ═══════════ -->
-<div class="overlay" id="ovEntrada">
-  <div class="modal modal-wrap">
-    <button class="close-x" onclick="cerrarModal('modalEntrada')">✕</button>
-    <h2 class="maia-font">Registrar Entrada</h2>
-    <div class="msg" id="msgEntrada"></div>
-
-    <div class="campo">
-      <label>Usuario</label>
-      <select id="ent-usuario" onchange="autocompletarEntrada()"></select>
+  <div class="card-body">
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 10px;">¿Deseas contactarnos por WhatsApp?</h2>
+    <p style="font-size: 0.9rem; color: #555;">Te redirigiremos a WhatsApp para enviarnos un mensaje sobre tu arreglo 🌷 🎈</p>
+    <div class="sucursal-wrap">
+      <button class="btn-suc" id="eca" onclick="sel('Ecatepec')">Ecatepec</button>
+      <button class="btn-suc" id="tec" onclick="sel('Tecámac')">Tecámac</button>
     </div>
-    <div class="fila2">
-      <div class="campo"><label>Cuenta</label><input id="ent-cuenta" disabled></div>
-      <div class="campo"><label>Sucursal</label><input id="ent-sucursal" disabled></div>
-    </div>
-    <div class="fila2">
-      <div class="campo"><label>Saldo caja entrada</label><input id="ent-saldo" type="number" step="0.01" placeholder="0.00"></div>
-      <div class="campo"><label>Ubicación</label><input id="ent-coords" placeholder="Se captura automático" disabled></div>
-    </div>
-    <div class="campo">
-      <label>Observaciones entrada</label>
-      <textarea id="ent-obs" rows="2" placeholder="Opcional"></textarea>
-    </div>
-
-    <div class="fila2">
-      <button type="button" class="btn btn-secundario" onclick="limpiarCamposEntrada()">Limpiar</button>
-      <button class="btn btn-primary" id="btn-registrar-entrada" onclick="enviarEntrada()">Registrar Entrada</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════ MODAL: REGISTRAR SALIDA ═══════════ -->
-<div class="overlay" id="ovSalida">
-  <div class="modal modal-wrap">
-    <button class="close-x" onclick="cerrarModal('modalSalida')">✕</button>
-    <h2 class="maia-font">Registrar Salida</h2>
-    <div class="sub">Busca el registro de ENTRADA de hoy y lo completa</div>
-    <div class="msg" id="msgSalida"></div>
-
-    <div class="campo">
-      <label>Usuario</label>
-      <select id="sal-usuario" onchange="autocompletarSalida()"></select>
-    </div>
-    <div class="fila2">
-      <div class="campo"><label>Cuenta</label><input id="sal-cuenta" disabled></div>
-      <div class="campo"><label>Sucursal</label><input id="sal-sucursal" disabled></div>
-    </div>
-    <div class="fila2">
-      <div class="campo"><label>Saldo caja salida</label><input id="sal-saldo" type="number" step="0.01" placeholder="0.00"></div>
-      <div class="campo"><label>Ubicación</label><input id="sal-coords" placeholder="Se captura automático" disabled></div>
-    </div>
-    <div class="campo">
-      <label>Observaciones salida</label>
-      <textarea id="sal-obs" rows="2" placeholder="Opcional"></textarea>
-    </div>
-
-    <div class="fila2">
-      <button type="button" class="btn btn-secundario" onclick="limpiarCamposSalida()">Limpiar</button>
-      <button class="btn btn-primary" id="btn-registrar-salida" onclick="enviarSalida()">Registrar Salida</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════ MODAL: GENERAR REMISIÓN ═══════════ -->
-<div class="overlay" id="ovRemision">
-  <div class="modal modal-wrap wide">
-    <button class="close-x" onclick="cerrarModal('modalRemision')">✕</button>
-    <h2 class="maia-font">Generar Remisión</h2>
-    <div class="sub" id="rem-modo-badge" style="display:none;color:var(--rojo);font-weight:700">Editando remisión: <span id="rem-modo-id"></span></div>
-    <div class="msg" id="msgRemision"></div>
-
-    <div class="campo">
-      <label class="req">Sucursal</label>
-      <div class="toggle-si-no">
-        <button type="button" id="rem-suc-sc" onclick="elegirSucursal('SAN CRISTOBAL')">San Cristóbal</button>
-        <button type="button" id="rem-suc-oa" onclick="elegirSucursal('OJO DE AGUA')">Ojo de Agua</button>
+    <div class="optional-fields">
+      <div class="field-wrap">
+        <input type="tel" id="inputCelular" placeholder=" " maxlength="15" inputmode="numeric"
+               oninput="this.value=this.value.replace(/[^0-9+\-\s]/g,'')">
+        <label for="inputCelular">📱 Celular</label>
+      </div>
+      <div class="field-wrap">
+        <input type="text" id="inputNombre" placeholder=" " maxlength="60">
+        <label for="inputNombre">🌸 Nombre</label>
       </div>
     </div>
-
-    <div class="fila3">
-      <div class="campo"><label>Remisión No.</label><input id="rem-no" disabled placeholder="Se genera automático"></div>
-      <div class="campo"><label>Pedido No.</label><input id="rem-pedido" disabled placeholder="Se genera automático"></div>
-      <div class="campo"><label class="req">Celular</label><input id="rem-celular"></div>
-    </div>
-    <div class="campo"><label class="req">Cliente</label><input id="rem-cliente"></div>
-
-    <div class="campo">
-      <label>¿Envío a domicilio?</label>
-      <div class="toggle-si-no">
-        <button type="button" id="rem-env-si" onclick="elegirEnvio(true)">Sí</button>
-        <button type="button" id="rem-env-no" onclick="elegirEnvio(false)">No</button>
-      </div>
-    </div>
-    <div class="fila3">
-      <div class="campo"><label>Fecha entrega</label><input id="rem-fecha-ent" type="date"></div>
-      <div class="campo"><label>Hora entrega</label><input id="rem-hora-ent" type="time"></div>
-      <div class="campo"><label>Costo envío</label><input id="rem-costo-envio" type="number" step="0.01" disabled></div>
-    </div>
-    <div class="campo"><label>Domicilio</label><input id="rem-domicilio" disabled></div>
-
-    <div class="campo">
-      <label>Artículos</label>
-      <table class="tabla-art" id="tabla-articulos">
-        <thead><tr>
-          <th style="width:60px">Cant.</th><th>Artículo</th><th style="width:90px">Precio</th>
-          <th style="width:90px">Importe</th><th style="width:30px"></th>
-        </tr></thead>
-        <tbody id="body-articulos"></tbody>
-      </table>
-      <button type="button" class="btn btn-secundario" style="margin-top:8px" onclick="agregarFilaArticulo()">+ Agregar artículo</button>
-    </div>
-
-    <div class="fila2">
-      <div class="campo"><label>Anticipo</label><input id="rem-anticipo" type="number" step="0.01" value="0" oninput="calcularTotales()" onfocus="if(this.value==='0')this.value='';"></div>
-      <div class="campo"><label>Forma de pago anticipo</label>
-        <select id="rem-forma-anticipo">
-          <option value="" selected>Selecciona…</option>
-          <option>EFECTIVO</option><option>TRANSFERENCIA</option><option>TARJETA</option>
-        </select>
-      </div>
-    </div>
-    <div class="campo"><label>Forma de pago restante</label>
-      <select id="rem-forma-restante">
-        <option value="" selected>Selecciona…</option>
-        <option>EFECTIVO</option><option>TRANSFERENCIA</option><option>TARJETA</option>
-      </select>
-    </div>
-
-    <div class="totales">
-      <div><span>Subtotal</span><span id="tot-subtotal">$0.00</span></div>
-      <div><span>Costo envío</span><span id="tot-envio">$0.00</span></div>
-      <div><span>Anticipo</span><span id="tot-anticipo">$0.00</span></div>
-      <div class="total-final"><span>Restante</span><span id="tot-restante">$0.00</span></div>
-    </div>
-
-    <div class="fila2" style="margin-top:14px">
-      <div class="campo"><label class="req">Estatus de pago</label>
-        <select id="rem-estatus-pago">
-          <option value="" selected>Selecciona…</option>
-          <option>PENDIENTE DE PAGO</option><option>PAGO FINIQUITADO</option>
-        </select>
-      </div>
-      <div class="campo"><label class="req">Estatus del pedido</label>
-        <select id="rem-estatus-pedido">
-          <option value="" selected>Selecciona…</option>
-          <option>PENDIENTE DE ENTREGA</option><option>PEDIDO ENTREGADO</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="fila2">
-      <div class="campo"><label class="req">Cajero</label><select id="rem-cajero"></select></div>
-      <div class="campo"><label>Dedicatoria</label><input id="rem-dedicatoria"></div>
-    </div>
-    <div class="campo"><label>Notas del pedido</label><textarea id="rem-notas-pedido" rows="2"></textarea></div>
-
-    <div class="fila2">
-      <button type="button" class="btn btn-secundario" id="btn-cancelar-edicion" style="display:none" onclick="cancelarEdicionRemision()">Cancelar Edición</button>
-      <button class="btn btn-primary" id="btn-guardar-remision" onclick="enviarRemision()">Guardar Remisión</button>
-    </div>
+    <p class="optional-hint">Déjanos tu info y te contactamos más rápido 💜</p>
   </div>
-</div>
-
-<!-- ═══════════ MODAL: CONFIRMAR TICKET ═══════════ -->
-<div class="overlay" id="ovConfirmarTicket">
-  <div class="modal modal-wrap" style="max-width:360px">
-    <div class="confirm-box">
-      <div class="ic">🧾</div>
-      <h2 class="maia-font" style="font-size:19px">Remisión generada</h2>
-      <div class="sub" id="confirm-id-remision"></div>
-      <div class="btns">
-        <button class="btn btn-secundario" onclick="cerrarConfirmacionTicket()">Cerrar</button>
-        <button class="btn btn-primary" onclick="abrirVerTicket()">Generar Ticket</button>
-      </div>
-    </div>
+  <div class="card-footer">
+    <button class="btn-close" onclick="window.close()">Cerrar</button>
+    <button class="btn-accept" id="btnOk" onclick="enviar()" disabled>✓ Aceptar ✓</button>
   </div>
+  <div class="maia-label">TIENDA <span style="color:var(--maia-purple); font-weight:bold;">M A I A</span></div>
 </div>
-
-<!-- ═══════════ MODAL: TABLA REMISIONES ═══════════ -->
-<div class="overlay" id="ovTablaRemisiones">
-  <div class="modal modal-wrap wide">
-    <button class="close-x" onclick="cerrarModal('modalTablaRemisiones')">✕</button>
-    <h2 class="maia-font">Tabla Remisiones</h2>
-
-    <div class="tabs">
-      <button type="button" class="tab-btn" id="tab-oa" onclick="cambiarSucursalTabla('OJO DE AGUA')">Ojo de Agua</button>
-      <button type="button" class="tab-btn" id="tab-sc" onclick="cambiarSucursalTabla('SAN CRISTOBAL')">San Cristóbal</button>
-    </div>
-
-    <div class="tr-toolbar">
-      <input type="text" id="tr-buscar" placeholder="Buscar por cliente, celular, ID remisión, pedido…" oninput="filtrarTablaRemisiones()">
-      <input type="date" id="tr-fecha" onchange="filtrarTablaRemisiones()" style="max-width:170px;flex:0 0 170px" title="Filtrar por fecha de remisión">
-      <button type="button" class="btn btn-secundario" onclick="descargarExcelRemisiones()">⬇ Descargar Excel</button>
-      <button type="button" class="btn btn-secundario" onclick="cargarRemisiones()">↻ Actualizar</button>
-    </div>
-
-    <div class="tr-tabla-wrap">
-      <table class="tr-tabla" id="tr-tabla">
-        <thead><tr id="tr-thead-row"></tr></thead>
-        <tbody id="tr-tbody"></tbody>
-      </table>
-      <div class="tr-vacio" id="tr-vacio" style="display:none">No hay remisiones para mostrar.</div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════ MODAL: PROGRAMA DE FIDELIZACIÓN ═══════════ -->
-<div class="overlay" id="ovFidelizacion">
-  <div class="modal modal-wrap">
-    <button class="close-x" onclick="cerrarModal('modalFidelizacion')">✕</button>
-    <h2 class="maia-font">Programa de Fidelización</h2>
-    <button type="button" class="btn btn-secundario" style="margin:6px 0 14px" onclick="abrirTablaClientes()">📋 Ver Tabla Clientes</button>
-    <div class="msg" id="msgFidelizacion"></div>
-
-    <div class="campo">
-      <label class="req">Sucursal</label>
-      <div class="toggle-si-no">
-        <button type="button" id="fid-suc-sc" onclick="elegirSucursalFidelizacion('SAN CRISTOBAL')">San Cristóbal</button>
-        <button type="button" id="fid-suc-oa" onclick="elegirSucursalFidelizacion('OJO DE AGUA')">Ojo de Agua</button>
-      </div>
-    </div>
-
-    <div class="fila2">
-      <div class="campo"><label class="req">Nombre</label><input id="fid-nombre"></div>
-      <div class="campo"><label class="req">Apellido</label><input id="fid-apellido"></div>
-    </div>
-    <div class="fila2">
-      <div class="campo"><label class="req">Celular</label><input id="fid-celular"></div>
-      <div class="campo"><label>Correo</label><input id="fid-correo" type="email"></div>
-    </div>
-    <div class="campo"><label>Fecha de nacimiento</label><input id="fid-nacimiento" type="date"></div>
-
-    <button class="btn btn-primary btn-block" onclick="enviarFidelizacion()">Registrar Cliente</button>
-  </div>
-</div>
-
-<!-- ═══════════ MODAL: TABLA CLIENTES (FIDELIZACIÓN) ═══════════ -->
-<div class="overlay" id="ovTablaClientes">
-  <div class="modal modal-wrap wide">
-    <button class="close-x" onclick="cerrarModal('modalTablaClientes')">✕</button>
-    <h2 class="maia-font">Tabla Clientes</h2>
-
-    <div class="tr-toolbar">
-      <input type="text" id="fc-buscar" placeholder="Buscar por sucursal, nombre, apellido o fecha de nacimiento…" oninput="filtrarTablaClientes()">
-      <button type="button" class="btn btn-secundario" onclick="cargarClientes()">↻ Actualizar</button>
-    </div>
-
-    <div class="tr-tabla-wrap">
-      <table class="tr-tabla" id="fc-tabla">
-        <thead><tr id="fc-thead-row"></tr></thead>
-        <tbody id="fc-tbody"></tbody>
-      </table>
-      <div class="tr-vacio" id="fc-vacio" style="display:none">No hay clientes para mostrar.</div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════ MODAL: VER TICKET (imprimible) ═══════════ -->
-<div class="overlay" id="ovVerTicket">
-  <div class="modal modal-wrap" style="max-width:380px">
-    <button class="close-x" onclick="cerrarModal('modalVerTicket')">✕</button>
-    <div class="aviso-impresion">
-      ⚠️ <b>Antes de imprimir</b>, en "Más ajustes" del diálogo de impresión revisa 4 cosas:
-      <br>1) Tamaño de papel = <b>rollo 80&nbsp;mm</b> (no Carta/A4)
-      <br>2) Márgenes = <b>Ninguno</b>
-      <br>3) Escala = <b>100%</b>
-      <br>4) Encabezado y pie de página = <b>Desactivado</b> (para que no salga la fecha/URL del navegador)
-      <br>Configúralo una sola vez como predeterminado en Windows para no repetirlo cada vez.
-    </div>
-    <div id="ticket">
-      <h3>M A I A 🌷 Boutique</h3>
-      <div class="centro">Flores y Globos 🎈</div>
-      <div class="centro" id="tk-sucursal"></div>
-      <hr>
-      <div>Remisión: <span id="tk-id"></span></div>
-      <div>Fecha: <span id="tk-fecha"></span></div>
-      <div>Pedido No: <span id="tk-pedido"></span></div>
-      <div>Cliente: <span id="tk-cliente"></span></div>
-      <div>Celular: <span id="tk-celular"></span></div>
-      <div id="tk-entrega-wrap">Entrega: <span id="tk-entrega"></span></div>
-      <div id="tk-domicilio-wrap">Domicilio: <span id="tk-domicilio"></span></div>
-      <hr>
-      <table id="tk-tabla"></table>
-      <hr>
-      <table>
-        <tr><td>Subtotal</td><td style="text-align:right" id="tk-subtotal"></td></tr>
-        <tr id="tk-envio-wrap"><td>Envío</td><td style="text-align:right" id="tk-envio"></td></tr>
-        <tr><td>Anticipo (<span id="tk-forma-ant"></span>)</td><td style="text-align:right" id="tk-anticipo"></td></tr>
-        <tr><td><b>Restante (<span id="tk-forma-res"></span>)</b></td><td style="text-align:right"><b id="tk-restante"></b></td></tr>
-      </table>
-      <hr>
-      <div class="centro">Atendió: <span id="tk-usuario"></span></div>
-      <div class="centro">¡Gracias por su compra! 🌷</div>
-    </div>
-    <button class="btn btn-primary btn-block" style="margin-top:14px" onclick="imprimirTicket()">Imprimir Ticket</button>
-    <div class="fila2" style="margin-top:8px">
-      <button type="button" class="btn btn-secundario" id="btn-enviar-grupo" onclick="enviarTicketAGrupoUI()">📤 Enviar a Tickets Maia Boutique</button>
-      <button type="button" class="btn btn-secundario" id="btn-enviar-cliente" onclick="enviarTicketAlClienteUI()">📤 Enviar al Cliente</button>
-    </div>
-    <div class="msg" id="msgEnvioTicket"></div>
-  </div>
-</div>
-
 <script>
-/* ══════════════════════════════════════════════════════════════
-   Este Index vive en GitHub Pages y le habla a Apps Script como
-   una API vía JSONP (evita el bloqueo de CORS de un fetch normal).
-   ⚠️ Reemplaza esta URL por la de TU implementación (Implementar →
-   Administrar implementaciones → copiar URL que termina en /exec).
-   ══════════════════════════════════════════════════════════════ */
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx4abJnm8PSE-LNtjskFHOl_KO4acPmcs2nxwtatnfoD-Nz2q0mEfBwwoEjrBgyDquR/exec';
-
-/* Llama a una función del backend por JSONP.
-   accion:  nombre de la función en Codigo.gs (ver despacharAccionApi)
-   params:  objeto plano de parámetros de URL; usa params.payload para
-            mandar un objeto completo (se convierte a JSON automático)
-   onDone:  function(resultado) — se llama siempre, éxito o error */
-function llamarApi(accion, params, onDone) {
-  var cbName = '_maia' + Date.now() + Math.floor(Math.random() * 9999);
-  var url = APPS_SCRIPT_URL + '?accion=' + encodeURIComponent(accion) + '&callback=' + cbName;
-  params = params || {};
-  Object.keys(params).forEach(function (k) {
-    var v = (k === 'payload') ? JSON.stringify(params[k]) : params[k];
-    url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(v === undefined || v === null ? '' : v);
-  });
-
-  var script = document.createElement('script');
-  var timer = setTimeout(function () {
-    cleanup();
-    onDone({ ok: false, error: 'Sin respuesta del servidor. Revisa tu conexión e inténtalo de nuevo.' });
-  }, 20000);
-
-  window[cbName] = function (data) {
-    cleanup();
-    onDone(data);
-  };
-  function cleanup() {
-    clearTimeout(timer);
-    delete window[cbName];
-    try { if (script.parentNode) document.head.removeChild(script); } catch (e) { }
+  let sucursal = "";
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhnYQkJ-nxFIE3aorEGbihJ1bGmEUI6k42mWVVh8_V7zZWTI9Q_5KOisXo7LNFFO8T/exec";
+  function sel(n) {
+    sucursal = n;
+    document.getElementById('eca').classList.remove('active');
+    document.getElementById('tec').classList.remove('active');
+    document.getElementById(n === 'Ecatepec' ? 'eca' : 'tec').classList.add('active');
+    document.getElementById('btnOk').disabled = false;
   }
-  script.onerror = function () {
-    cleanup();
-    onDone({ ok: false, error: 'No se pudo conectar con el servidor.' });
-  };
-  document.head.appendChild(script); // appendChild ANTES de asignar src — patrón comprobado
-  script.src = url;
-}
-
-var USUARIOS = [];
-var sucursalRemision = null;
-var envioDomicilio = null;
-var contadorFilaArt = 0;
-var modoEdicionId = null;
-var ultimoTicket = null;
-var sucursalFidelizacion = null;
-
-/* ── init ─────────────────────────────────────────────── */
-window.onload = function () {
-  var h = new Date().getHours();
-  var saludo = h < 12 ? 'Buenos días' : (h < 19 ? 'Buenas tardes' : 'Buenas noches');
-  document.getElementById('bv-saludo').textContent = saludo + ', bienvenido/a a M A I A';
-  document.getElementById('bv-fecha').textContent = new Date().toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-  llamarApi('getDatosIniciales', {}, function (datos) {
-    USUARIOS = datos.usuarios || [];
-    llenarSelectUsuarios('ent-usuario');
-    llenarSelectUsuarios('sal-usuario');
-    llenarSelectUsuarios('rem-cajero');
-  });
-
-  agregarFilaArticulo();
-  capturarUbicacion();
-};
-
-function llenarSelectUsuarios(id) {
-  var sel = document.getElementById(id);
-  sel.innerHTML = '<option value="">Selecciona un usuario…</option>';
-  USUARIOS.forEach(function (u) {
-    var op = document.createElement('option');
-    op.value = u.nombre; op.textContent = u.nombre;
-    sel.appendChild(op);
-  });
-}
-
-function capturarUbicacion() {
-  if (!navigator.geolocation) return;
-  navigator.geolocation.getCurrentPosition(function (pos) {
-    var coords = pos.coords.latitude + ',' + pos.coords.longitude;
-    document.getElementById('ent-coords').value = coords;
-    document.getElementById('sal-coords').value = coords;
-  }, function () { /* usuario negó permiso: se guarda vacío */ });
-}
-
-/* ── modales ──────────────────────────────────────────── */
-function abrirModal(id) {
-  document.getElementById('ov' + id.replace('modal', '')).classList.add('open');
-}
-function cerrarModal(id) {
-  document.getElementById('ov' + id.replace('modal', '')).classList.remove('open');
-}
-
-function irPaginaMaia() {
-  // TODO: reemplazar por el enlace definitivo de la página MAIA cuando esté disponible
-  alert('El enlace a la Página MAIA se agregará próximamente.');
-}
-
-/* ── Programa de Fidelización ─────────────────────────── */
-function abrirFidelizacion() {
-  sucursalFidelizacion = null;
-  document.getElementById('fid-suc-sc').classList.remove('activo');
-  document.getElementById('fid-suc-oa').classList.remove('activo');
-  limpiarCamposFidelizacion();
-  var msg = document.getElementById('msgFidelizacion');
-  msg.className = 'msg'; msg.style.display = 'none';
-  abrirModal('modalFidelizacion');
-}
-
-function elegirSucursalFidelizacion(s) {
-  sucursalFidelizacion = s;
-  document.getElementById('fid-suc-sc').classList.toggle('activo', s === 'SAN CRISTOBAL');
-  document.getElementById('fid-suc-oa').classList.toggle('activo', s === 'OJO DE AGUA');
-}
-
-function limpiarCamposFidelizacion() {
-  ['fid-nombre', 'fid-apellido', 'fid-celular', 'fid-correo', 'fid-nacimiento'].forEach(function (id) {
-    document.getElementById(id).value = '';
-  });
-}
-
-function enviarFidelizacion() {
-  var msg = document.getElementById('msgFidelizacion');
-  msg.className = 'msg'; msg.style.display = 'none';
-
-  if (!sucursalFidelizacion) return mostrarMsg(msg, 'Selecciona la sucursal.', false);
-  var nombre = document.getElementById('fid-nombre').value.trim();
-  var apellido = document.getElementById('fid-apellido').value.trim();
-  var celular = document.getElementById('fid-celular').value.trim();
-  if (!nombre) return mostrarMsg(msg, 'El campo Nombre es obligatorio.', false);
-  if (!apellido) return mostrarMsg(msg, 'El campo Apellido es obligatorio.', false);
-  if (!celular) return mostrarMsg(msg, 'El campo Celular es obligatorio.', false);
-
-  var data = {
-    sucursal: sucursalFidelizacion,
-    nombre: nombre,
-    apellido: apellido,
-    celular: celular,
-    correo: document.getElementById('fid-correo').value,
-    fechaNacimiento: document.getElementById('fid-nacimiento').value
-  };
-
-  llamarApi('registrarFidelizacion', { payload: data }, function (r) {
-    if (r.ok) {
-      mostrarMsg(msg, 'Cliente registrado · ID: ' + r.idFidelizacion + ' · No. Cliente: ' + r.numeroCliente, true);
-      limpiarCamposFidelizacion();
-    } else mostrarMsg(msg, r.error, false);
-  });
-}
-
-/* ── Tabla Clientes (Fidelización) ────────────────────── */
-var datosTablaClientes = { headers: [], filas: [] };
-
-function abrirTablaClientes() {
-  abrirModal('modalTablaClientes');
-  document.getElementById('fc-buscar').value = '';
-  cargarClientes();
-}
-
-function cargarClientes() {
-  document.getElementById('fc-vacio').style.display = 'none';
-  document.getElementById('fc-tbody').innerHTML = '<tr><td style="padding:14px">Cargando…</td></tr>';
-  llamarApi('listarFidelizacion', {}, function (r) {
-    if (r && r.headers) {
-      datosTablaClientes = r;
-      renderTablaClientes();
+  async function enviar() {
+    const btn = document.getElementById('btnOk');
+    btn.disabled = true; btn.innerText = "Registrando...";
+    const urlParams = new URLSearchParams(window.location.search);
+    const fuenteRaw = urlParams.get('src') || "Bio General";
+    let redSocial = fuenteRaw.charAt(0).toUpperCase() + fuenteRaw.slice(1).toLowerCase();
+    let notasFinal = "";
+    if (redSocial.toLowerCase() === "whatsapp") {
+      notasFinal = "🔔 Un Cliente, Contactó desde Whatsapp - Sucursal " + sucursal;
     } else {
-      document.getElementById('fc-tbody').innerHTML = '';
-      document.getElementById('fc-vacio').style.display = 'block';
-      document.getElementById('fc-vacio').textContent = 'Error: ' + (r && r.error || 'no se pudo cargar.');
+      notasFinal = "Contactó desde " + redSocial + " - Sucursal " + sucursal;
     }
-  });
-}
-
-/* Columnas a mostrar en la tabla: se oculta ID FIDELIZACION (uso interno)
-   y NUMERO DE VISITA se muestra primero. */
-function columnasVisiblesClientes(headers) {
-  var visibles = headers.filter(function (h) { return h !== 'ID FIDELIZACION'; });
-  var idxVisita = visibles.indexOf('NUMERO DE VISITA');
-  if (idxVisita > 0) {
-    visibles.splice(idxVisita, 1);
-    visibles.unshift('NUMERO DE VISITA');
+    const celular = document.getElementById('inputCelular').value.trim();
+    const nombre  = document.getElementById('inputNombre').value.trim();
+    const payload = {
+      sucursal: sucursal,
+      notas:    notasFinal,
+      celular:  celular,
+      nombre:   nombre
+    };
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (e) { console.warn(e); }
+    window.location.href = "https://api.whatsapp.com/send?phone=5215579248882&text=Hola!!%20Estoy%20interesada%20en%20un%20arreglo%20de%20flores%20%F0%9F%92%90y%2Fo%20globos%20%F0%9F%8E%88%E2%80%A6";
   }
-  return visibles;
-}
-
-function renderTablaClientes() {
-  var visibles = columnasVisiblesClientes(datosTablaClientes.headers || []);
-  var thead = document.getElementById('fc-thead-row');
-  thead.innerHTML = '<th>Acciones</th>';
-  visibles.forEach(function (h) {
-    var th = document.createElement('th'); th.textContent = h; thead.appendChild(th);
-  });
-  filtrarTablaClientes();
-}
-
-function filtrarTablaClientes() {
-  var q = (document.getElementById('fc-buscar').value || '').trim().toUpperCase();
-  var headers = datosTablaClientes.headers || [];
-  var visibles = columnasVisiblesClientes(headers);
-  var filas = datosTablaClientes.filas || [];
-  var filtradas = !q ? filas : filas.filter(function (f) {
-    return headers.some(function (h) { return String(f[h] || '').toUpperCase().indexOf(q) > -1; });
-  });
-
-  var tbody = document.getElementById('fc-tbody');
-  tbody.innerHTML = '';
-  document.getElementById('fc-vacio').style.display = filtradas.length ? 'none' : 'block';
-
-  filtradas.forEach(function (f) {
-    var tr = document.createElement('tr');
-
-    var tdAcc = document.createElement('td');
-    var btnVisita = document.createElement('button');
-    btnVisita.type = 'button';
-    btnVisita.className = 'btn btn-secundario';
-    btnVisita.style.padding = '5px 12px'; btnVisita.style.fontSize = '11px';
-    btnVisita.textContent = '+1 Visita';
-    btnVisita.onclick = (function (idFid, boton) {
-      return function () { sumarVisitaCliente(idFid, boton); };
-    })(f['ID FIDELIZACION'], btnVisita);
-    tdAcc.appendChild(btnVisita);
-    tr.appendChild(tdAcc);
-
-    visibles.forEach(function (h) {
-      var td = document.createElement('td');
-      var v = f[h];
-      td.textContent = (v === null || v === undefined) ? '' : v;
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
-  });
-}
-
-function sumarVisitaCliente(idFidelizacion, boton) {
-  var textoOriginal = boton.textContent;
-  boton.disabled = true;
-  boton.textContent = '…';
-  llamarApi('sumarVisitaFidelizacion', { idFidelizacion: idFidelizacion }, function (r) {
-    boton.disabled = false;
-    if (r.ok) {
-      boton.textContent = '✓ ' + r.numeroVisita;
-      setTimeout(function () { cargarClientes(); }, 700);
-    } else {
-      boton.textContent = textoOriginal;
-      alert(r.error);
-    }
-  });
-}
-
-/* ── Entrada ──────────────────────────────────────────── */
-function autocompletarEntrada() {
-  var nombre = document.getElementById('ent-usuario').value;
-  var u = USUARIOS.filter(function (x) { return x.nombre === nombre; })[0];
-  document.getElementById('ent-cuenta').value = u ? u.cuenta : '';
-  document.getElementById('ent-sucursal').value = u ? u.sucursal : '';
-}
-
-function limpiarCamposEntrada() {
-  document.getElementById('ent-usuario').selectedIndex = 0;
-  document.getElementById('ent-cuenta').value = '';
-  document.getElementById('ent-sucursal').value = '';
-  document.getElementById('ent-saldo').value = '';
-  document.getElementById('ent-obs').value = '';
-  var msg = document.getElementById('msgEntrada');
-  msg.className = 'msg'; msg.style.display = 'none';
-}
-
-function enviarEntrada() {
-  var msg = document.getElementById('msgEntrada');
-  msg.className = 'msg'; msg.style.display = 'none';
-  var usuario = document.getElementById('ent-usuario').value;
-  if (!usuario) { return mostrarMsg(msg, 'Selecciona un usuario.', false); }
-
-  var data = {
-    usuario: usuario,
-    coordenadas: document.getElementById('ent-coords').value,
-    saldoCaja: document.getElementById('ent-saldo').value,
-    observaciones: document.getElementById('ent-obs').value
-  };
-  var restaurar = ocuparBoton('btn-registrar-entrada', 'Procesando…');
-  llamarApi('registrarEntrada', { payload: data }, function (r) {
-    restaurar();
-    if (r.ok) { limpiarCamposEntrada(); mostrarMsg(msg, r.mensaje, true); }
-    else mostrarMsg(msg, r.error, false);
-  });
-}
-
-/* ── Salida ───────────────────────────────────────────── */
-function autocompletarSalida() {
-  var nombre = document.getElementById('sal-usuario').value;
-  var u = USUARIOS.filter(function (x) { return x.nombre === nombre; })[0];
-  document.getElementById('sal-cuenta').value = u ? u.cuenta : '';
-  document.getElementById('sal-sucursal').value = u ? u.sucursal : '';
-}
-
-function limpiarCamposSalida() {
-  document.getElementById('sal-usuario').selectedIndex = 0;
-  document.getElementById('sal-cuenta').value = '';
-  document.getElementById('sal-sucursal').value = '';
-  document.getElementById('sal-saldo').value = '';
-  document.getElementById('sal-obs').value = '';
-  var msg = document.getElementById('msgSalida');
-  msg.className = 'msg'; msg.style.display = 'none';
-}
-
-function enviarSalida() {
-  var msg = document.getElementById('msgSalida');
-  msg.className = 'msg'; msg.style.display = 'none';
-  var usuario = document.getElementById('sal-usuario').value;
-  if (!usuario) { return mostrarMsg(msg, 'Selecciona un usuario.', false); }
-
-  var data = {
-    usuario: usuario,
-    coordenadas: document.getElementById('sal-coords').value,
-    saldoCaja: document.getElementById('sal-saldo').value,
-    observaciones: document.getElementById('sal-obs').value
-  };
-  var restaurar = ocuparBoton('btn-registrar-salida', 'Procesando…');
-  llamarApi('registrarSalida', { payload: data }, function (r) {
-    restaurar();
-    if (r.ok) { limpiarCamposSalida(); mostrarMsg(msg, r.mensaje, true); }
-    else mostrarMsg(msg, r.error, false);
-  });
-}
-
-/* ── Remisión ─────────────────────────────────────────── */
-function elegirSucursal(s, autoCajero) {
-  if (autoCajero === undefined) autoCajero = true;
-  sucursalRemision = s;
-  document.getElementById('rem-suc-sc').classList.toggle('activo', s === 'SAN CRISTOBAL');
-  document.getElementById('rem-suc-oa').classList.toggle('activo', s === 'OJO DE AGUA');
-  if (autoCajero) {
-    llamarApi('obtenerCajeroSucursal', { sucursal: s }, function (r) {
-      if (r && r.valor) setSelectValue('rem-cajero', r.valor);
-    });
-
-    /* Vista previa de folios: el valor real y definitivo se recalcula al guardar */
-    llamarApi('previsualizarFoliosRemision', { sucursal: s }, function (r) {
-      if (r && r.ok) {
-        document.getElementById('rem-no').value = r.remisionNo;
-        document.getElementById('rem-pedido').value = r.pedidoNo;
-      }
-    });
+  const emojis = ['🌸','🎈','🌷','💐','🌼'];
+  const bg = document.getElementById('bgDeco');
+  for (let i = 0; i < 20; i++) {
+    const el = document.createElement('span');
+    el.className = 'petal';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.animationDuration = (8 + Math.random() * 12) + 's';
+    el.style.animationDelay = (Math.random() * 6) + 's';
+    bg.appendChild(el);
   }
-}
-
-function setSelectValue(id, value) {
-  var sel = document.getElementById(id);
-  if (!sel) return;
-  sel.value = value || '';
-  if (sel.selectedIndex === -1) sel.selectedIndex = 0;
-}
-
-function elegirEnvio(si) {
-  envioDomicilio = si;
-  document.getElementById('rem-env-si').classList.toggle('activo', si === true);
-  document.getElementById('rem-env-no').classList.toggle('activo', si === false);
-  document.getElementById('rem-costo-envio').disabled = !si;
-  document.getElementById('rem-domicilio').disabled = !si;
-  if (!si) { document.getElementById('rem-costo-envio').value = ''; document.getElementById('rem-domicilio').value = ''; }
-  calcularTotales();
-}
-
-function agregarFilaArticulo() {
-  contadorFilaArt++;
-  var id = 'art' + contadorFilaArt;
-  var tr = document.createElement('tr');
-  tr.id = id;
-  tr.innerHTML =
-    '<td><input type="number" min="1" value="1" oninput="calcularTotales()" class="q"></td>' +
-    '<td><input type="text" placeholder="Nombre del artículo" class="a"></td>' +
-    '<td><input type="number" step="0.01" value="0" oninput="calcularTotales()" onfocus="if(this.value===\'0\')this.value=\'\';" class="p"></td>' +
-    '<td class="imp">$0.00</td>' +
-    '<td><button type="button" class="del-fila" onclick="quitarFilaArticulo(\'' + id + '\')">✕</button></td>';
-  document.getElementById('body-articulos').appendChild(tr);
-}
-
-function quitarFilaArticulo(id) {
-  var el = document.getElementById(id);
-  if (el) el.remove();
-  calcularTotales();
-}
-
-function leerArticulos() {
-  var filas = document.querySelectorAll('#body-articulos tr');
-  var out = [];
-  filas.forEach(function (tr) {
-    var cantidad = Number(tr.querySelector('.q').value) || 0;
-    var articulo = tr.querySelector('.a').value;
-    var precio = Number(tr.querySelector('.p').value) || 0;
-    var importe = cantidad * precio;
-    tr.querySelector('.imp').textContent = '$' + importe.toFixed(2);
-    if (articulo || cantidad || precio) out.push({ cantidad: cantidad, articulo: articulo, precio: precio, importe: importe, categoria: '', codigo: '' });
-  });
-  return out;
-}
-
-function calcularTotales() {
-  var articulos = leerArticulos();
-  var subtotal = articulos.reduce(function (s, a) { return s + a.importe; }, 0);
-  var envio = envioDomicilio ? (Number(document.getElementById('rem-costo-envio').value) || 0) : 0;
-  var anticipo = Number(document.getElementById('rem-anticipo').value) || 0;
-  var restante = subtotal - anticipo;
-
-  document.getElementById('tot-subtotal').textContent = '$' + subtotal.toFixed(2);
-  document.getElementById('tot-envio').textContent = '$' + envio.toFixed(2);
-  document.getElementById('tot-anticipo').textContent = '$' + anticipo.toFixed(2);
-  document.getElementById('tot-restante').textContent = '$' + restante.toFixed(2);
-}
-
-function enviarRemision() {
-  var msg = document.getElementById('msgRemision');
-  msg.className = 'msg'; msg.style.display = 'none';
-
-  if (!sucursalRemision) return mostrarMsg(msg, 'Selecciona la sucursal.', false);
-  if (envioDomicilio === null) return mostrarMsg(msg, 'Indica si es envío a domicilio.', false);
-
-  var cliente = document.getElementById('rem-cliente').value.trim();
-  var celular = document.getElementById('rem-celular').value.trim();
-  var estatusPago = document.getElementById('rem-estatus-pago').value;
-  var estatusPedido = document.getElementById('rem-estatus-pedido').value;
-  var cajero = document.getElementById('rem-cajero').value;
-  if (!cliente) return mostrarMsg(msg, 'El campo Cliente es obligatorio.', false);
-  if (!celular) return mostrarMsg(msg, 'El campo Celular es obligatorio.', false);
-  if (!estatusPago) return mostrarMsg(msg, 'Selecciona el Estatus de pago.', false);
-  if (!estatusPedido) return mostrarMsg(msg, 'Selecciona el Estatus del pedido.', false);
-  if (!cajero) return mostrarMsg(msg, 'Selecciona el Cajero.', false);
-
-  var articulos = leerArticulos();
-  if (!articulos.length) return mostrarMsg(msg, 'Agrega al menos un artículo.', false);
-
-  var payload = {
-    cabecera: {
-      sucursal: sucursalRemision,
-      remisionNo: document.getElementById('rem-no').value,
-      pedidoNo: document.getElementById('rem-pedido').value,
-      cliente: cliente,
-      celular: celular,
-      envioDomicilio: envioDomicilio,
-      fechaEntrega: document.getElementById('rem-fecha-ent').value,
-      horaEntrega: document.getElementById('rem-hora-ent').value,
-      costoEnvio: document.getElementById('rem-costo-envio').value,
-      anticipo: document.getElementById('rem-anticipo').value,
-      formaPagoAnticipo: document.getElementById('rem-forma-anticipo').value,
-      formaPagoRestante: document.getElementById('rem-forma-restante').value,
-      domicilio: document.getElementById('rem-domicilio').value,
-      estatusPago: estatusPago,
-      estatusPedido: estatusPedido,
-      dedicatoria: document.getElementById('rem-dedicatoria').value,
-      notasPedido: document.getElementById('rem-notas-pedido').value,
-      cajero: document.getElementById('rem-cajero').value
-    },
-    articulos: articulos
-  };
-
-  var restaurar = ocuparBoton('btn-guardar-remision', modoEdicionId ? 'Actualizando…' : 'Guardando…');
-  var onResultado = function (r) { restaurar(); exitoGuardarRemision(r, msg); };
-
-  if (modoEdicionId) llamarApi('actualizarRemision', { idRemision: modoEdicionId, payload: payload }, onResultado);
-  else llamarApi('guardarRemision', { payload: payload }, onResultado);
-}
-
-function exitoGuardarRemision(r, msg) {
-  if (r.ok) {
-    ultimoTicket = r.ticket;
-    limpiarFormularioRemision();
-    document.getElementById('confirm-id-remision').textContent = 'Folio: ' + r.idRemision;
-    document.getElementById('ovConfirmarTicket').classList.add('open');
-  } else {
-    mostrarMsg(msg, r.error, false);
-  }
-}
-
-/* Abre Generar Remisión desde el menú, siempre en modo "nueva remisión"
-   (aunque antes se haya quedado editando otra remisión) */
-function abrirGenerarRemision() {
-  limpiarFormularioRemision();
-  abrirModal('modalRemision');
-}
-
-/* Deja el formulario de Generar Remisión listo para una nueva remisión */
-function limpiarFormularioRemision() {
-  modoEdicionId = null;
-  document.getElementById('rem-modo-badge').style.display = 'none';
-  document.getElementById('btn-cancelar-edicion').style.display = 'none';
-  document.getElementById('btn-guardar-remision').textContent = 'Guardar Remisión';
-
-  sucursalRemision = null; envioDomicilio = null;
-  document.getElementById('rem-suc-sc').classList.remove('activo');
-  document.getElementById('rem-suc-oa').classList.remove('activo');
-  document.getElementById('rem-env-si').classList.remove('activo');
-  document.getElementById('rem-env-no').classList.remove('activo');
-  document.getElementById('rem-costo-envio').value = ''; document.getElementById('rem-costo-envio').disabled = true;
-  document.getElementById('rem-domicilio').value = ''; document.getElementById('rem-domicilio').disabled = true;
-  ['rem-no', 'rem-pedido', 'rem-celular', 'rem-cliente', 'rem-fecha-ent', 'rem-hora-ent', 'rem-dedicatoria', 'rem-notas-pedido'].forEach(function (id) {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('rem-anticipo').value = '0';
-  document.getElementById('rem-forma-anticipo').selectedIndex = 0;
-  document.getElementById('rem-forma-restante').selectedIndex = 0;
-  document.getElementById('rem-estatus-pago').selectedIndex = 0;
-  document.getElementById('rem-estatus-pedido').selectedIndex = 0;
-  document.getElementById('rem-cajero').selectedIndex = 0;
-  document.getElementById('body-articulos').innerHTML = '';
-  contadorFilaArt = 0;
-  agregarFilaArticulo();
-  calcularTotales();
-  var msg = document.getElementById('msgRemision');
-  msg.className = 'msg'; msg.style.display = 'none';
-}
-
-/* Sale del modo edición sin guardar cambios y cierra el formulario */
-function cancelarEdicionRemision() {
-  limpiarFormularioRemision();
-  cerrarModal('modalRemision');
-}
-
-/* ── Confirmación tras guardar: Cerrar / Generar Ticket ─ */
-function cerrarConfirmacionTicket() {
-  document.getElementById('ovConfirmarTicket').classList.remove('open');
-  cerrarModal('modalRemision');
-}
-function abrirVerTicket() {
-  if (ultimoTicket) armarTicket(ultimoTicket);
-  document.getElementById('ovConfirmarTicket').classList.remove('open');
-  cerrarModal('modalRemision');
-  document.getElementById('ovVerTicket').classList.add('open');
-}
-
-/* Vuelve a construir el ticket de una remisión ya guardada (desde la Tabla
-   Remisiones) leyendo sus datos actuales de la hoja, sin depender de ningún
-   PDF guardado. */
-function generarTicketDesdeTabla(idRemision, boton) {
-  var textoOriginal = boton.textContent;
-  boton.disabled = true;
-  boton.textContent = 'Generando…';
-  llamarApi('obtenerTicketRemision', { idRemision: idRemision }, function (r) {
-    boton.disabled = false;
-    boton.textContent = textoOriginal;
-    if (!r.ok) return alert(r.error);
-    ultimoTicket = r.ticket;
-    armarTicket(r.ticket);
-    document.getElementById('ovVerTicket').classList.add('open');
-  });
-}
-
-/* ── Editar una remisión existente ────────────────────── */
-function editarRemision(idRemision) {
-  cerrarModal('modalTablaRemisiones');
-  llamarApi('obtenerRemisionPorId', { idRemision: idRemision }, function (r) {
-    if (!r.ok) { alert(r.error); return; }
-    abrirModal('modalRemision');
-    cargarRemisionEnFormulario(idRemision, r.cabecera, r.articulos);
-  });
-}
-
-function cargarRemisionEnFormulario(idRemision, cab, articulos) {
-  modoEdicionId = idRemision;
-  document.getElementById('rem-modo-id').textContent = idRemision;
-  document.getElementById('rem-modo-badge').style.display = 'block';
-  document.getElementById('btn-cancelar-edicion').style.display = 'inline-flex';
-  document.getElementById('btn-guardar-remision').textContent = 'Actualizar Remisión';
-
-  elegirSucursal(cab.sucursal, false);
-  document.getElementById('rem-no').value = cab.remisionNo || '';
-  document.getElementById('rem-pedido').value = cab.pedidoNo || '';
-  document.getElementById('rem-cliente').value = cab.cliente || '';
-  document.getElementById('rem-celular').value = cab.celular || '';
-  elegirEnvio(!!cab.envioDomicilio);
-  document.getElementById('rem-fecha-ent').value = cab.fechaEntrega || '';
-  document.getElementById('rem-hora-ent').value = cab.horaEntrega || '';
-  document.getElementById('rem-costo-envio').value = cab.costoEnvio || '';
-  document.getElementById('rem-domicilio').value = cab.domicilio || '';
-  document.getElementById('rem-anticipo').value = cab.anticipo || 0;
-  setSelectValue('rem-forma-anticipo', cab.formaPagoAnticipo);
-  setSelectValue('rem-forma-restante', cab.formaPagoRestante);
-  setSelectValue('rem-estatus-pago', cab.estatusPago);
-  setSelectValue('rem-estatus-pedido', cab.estatusPedido);
-  document.getElementById('rem-dedicatoria').value = cab.dedicatoria || '';
-  document.getElementById('rem-notas-pedido').value = cab.notasPedido || '';
-  setSelectValue('rem-cajero', cab.cajero);
-
-  document.getElementById('body-articulos').innerHTML = '';
-  contadorFilaArt = 0;
-  if (articulos && articulos.length) {
-    articulos.forEach(function (a) {
-      agregarFilaArticulo();
-      var tr = document.getElementById('body-articulos').lastElementChild;
-      tr.querySelector('.q').value = a.cantidad;
-      tr.querySelector('.a').value = a.articulo;
-      tr.querySelector('.p').value = a.precio;
-    });
-  } else {
-    agregarFilaArticulo();
-  }
-  calcularTotales();
-}
-
-/* ── Ticket 80mm ──────────────────────────────────────── */
-function armarTicket(t) {
-  document.getElementById('tk-sucursal').textContent = t.sucursal;
-  document.getElementById('tk-id').textContent = t.idRemision;
-  document.getElementById('tk-fecha').textContent = t.fecha;
-  document.getElementById('tk-pedido').textContent = t.pedidoNo || '-';
-  document.getElementById('tk-cliente').textContent = t.cliente || '-';
-  document.getElementById('tk-celular').textContent = t.celular || '-';
-
-  var entregaWrap = document.getElementById('tk-entrega-wrap');
-  var domWrap = document.getElementById('tk-domicilio-wrap');
-  if (t.envioDomicilio) {
-    entregaWrap.style.display = ''; domWrap.style.display = '';
-    document.getElementById('tk-entrega').textContent = (t.fechaEntrega || '-') + ' ' + (t.horaEntrega || '');
-    document.getElementById('tk-domicilio').textContent = t.domicilio || '-';
-  } else {
-    entregaWrap.style.display = 'none'; domWrap.style.display = 'none';
-  }
-
-  var tabla = document.getElementById('tk-tabla');
-  tabla.innerHTML = '';
-  t.articulos.forEach(function (a) {
-    var tr = document.createElement('tr');
-    tr.innerHTML = '<td>' + a.cantidad + 'x ' + (a.articulo || '') + '</td><td style="text-align:right">$' + Number(a.importe).toFixed(2) + '</td>';
-    tabla.appendChild(tr);
-  });
-
-  document.getElementById('tk-subtotal').textContent = '$' + Number(t.subtotal).toFixed(2);
-  var envioRow = document.getElementById('tk-envio-wrap');
-  if (t.envioDomicilio) { envioRow.style.display = ''; document.getElementById('tk-envio').textContent = '$' + Number(t.costoEnvio || 0).toFixed(2); }
-  else envioRow.style.display = 'none';
-  document.getElementById('tk-forma-ant').textContent = t.formaPagoAnticipo || '';
-  document.getElementById('tk-anticipo').textContent = '$' + Number(t.anticipo).toFixed(2);
-  document.getElementById('tk-forma-res').textContent = t.formaPagoRestante || '';
-  document.getElementById('tk-restante').textContent = '$' + Number(t.restante).toFixed(2);
-  document.getElementById('tk-usuario').textContent = t.usuario || '-';
-}
-
-function imprimirTicket() {
-  /* Calcula la altura real del contenido del ticket y fija un @page con esa
-     altura exacta antes de imprimir. Un alto fijo en "auto" a veces no se
-     respeta igual en todos los navegadores/impresoras y corta contenido;
-     con la altura calculada, la hoja siempre mide justo lo que necesita.
-     La escala de impresión se deja fija en 85% (ver @media print), así que
-     el alto de página también se calcula a esa escala para no desperdiciar
-     papel del rollo con espacio de más. */
-  try {
-    var ESCALA_IMPRESION = 0.85;
-    var el = document.getElementById('ticket');
-    var altoPx = el.scrollHeight * ESCALA_IMPRESION;
-    var altoMM = Math.ceil(altoPx * 25.4 / 96) + 5;
-    var st = document.getElementById('page-size-dinamico');
-    if (!st) {
-      st = document.createElement('style');
-      st.id = 'page-size-dinamico';
-      document.head.appendChild(st);
-    }
-    st.textContent = '@page{size:80mm ' + altoMM + 'mm;margin:0}';
-  } catch (e) {}
-  window.print();
-}
-
-/* ── Enviar ticket por WhatsApp ───────────────────────── */
-function enviarTicketAGrupoUI() {
-  if (!ultimoTicket || !ultimoTicket.idRemision) return;
-  var msg = document.getElementById('msgEnvioTicket');
-  msg.className = 'msg'; msg.style.display = 'none';
-  var restaurar = ocuparBoton('btn-enviar-grupo', 'Enviando…');
-  llamarApi('enviarTicketAGrupo', { idRemision: ultimoTicket.idRemision }, function (r) {
-    restaurar();
-    if (r.ok) mostrarMsg(msg, 'Ticket enviado al grupo.', true);
-    else mostrarMsg(msg, r.error || 'No se pudo enviar.', false);
-  });
-}
-
-/* Arma el mismo texto del ticket para el enlace de WhatsApp (equivalente al
-   que construye Codigo.gs en construirMensajeRemision). */
-function construirMensajeRemisionJS(t) {
-  var lineas = (t.articulos || []).map(function (a) {
-    return '- ' + a.cantidad + 'x ' + (a.articulo || '') + ' - $' + Number(a.importe).toFixed(2);
-  }).join('\n');
-  var entrega = t.envioDomicilio
-    ? ('\nEntrega: ' + (t.fechaEntrega || '-') + ' ' + (t.horaEntrega || '') + '\nDomicilio: ' + (t.domicilio || '-'))
-    : '';
-  return '*MAIA Boutique*\n' +
-    'Flores y Globos - ' + t.sucursal + '\n\n' +
-    'Remision: ' + t.idRemision + '\n' +
-    'Fecha: ' + t.fecha + '\n' +
-    'Pedido No: ' + (t.pedidoNo || '-') + '\n' +
-    'Cliente: ' + (t.cliente || '-') + '\n' +
-    'Celular: ' + (t.celular || '-') + entrega + '\n\n' +
-    lineas + '\n\n' +
-    'Subtotal: $' + Number(t.subtotal).toFixed(2) + '\n' +
-    'Anticipo (' + (t.formaPagoAnticipo || '') + '): $' + Number(t.anticipo).toFixed(2) + '\n' +
-    'Restante (' + (t.formaPagoRestante || '') + '): $' + Number(t.restante).toFixed(2) + '\n\n' +
-    'Atendio: ' + (t.usuario || '-');
-}
-
-/* Abre WhatsApp directo (enlace click-to-chat) con el mensaje ya escrito,
-   para que la asesora solo confirme el envío desde su propio WhatsApp —
-   así no depende de la API oficial de Meta (que no manda mensajes libres
-   fuera de su ventana de 24h) ni de permisos de UrlFetchApp. */
-function enviarTicketAlClienteUI() {
-  if (!ultimoTicket || !ultimoTicket.idRemision) return;
-  var msg = document.getElementById('msgEnvioTicket');
-  msg.className = 'msg'; msg.style.display = 'none';
-
-  var numero = String(ultimoTicket.celular || '').replace(/[^0-9]/g, '');
-  if (!numero) { mostrarMsg(msg, 'Esta remisión no tiene un celular válido.', false); return; }
-  if (numero.length === 10) numero = '52' + numero;
-
-  var texto = construirMensajeRemisionJS(ultimoTicket);
-  window.open('https://api.whatsapp.com/send?phone=' + numero + '&text=' + encodeURIComponent(texto), '_blank');
-  mostrarMsg(msg, 'Se abrió WhatsApp — confirma el envío ahí.', true);
-
-  llamarApi('marcarTicketEnviado', { idRemision: ultimoTicket.idRemision, columna: 'ENVIAR TICKET AL CLIENTE' }, function () {});
-}
-
-/* ── Tabla Remisiones ─────────────────────────────────── */
-var sucursalTabla = 'OJO DE AGUA';
-var datosTablaRemisiones = { headers: [], filas: [] };
-
-function abrirTablaRemisiones() {
-  abrirModal('modalTablaRemisiones');
-  cambiarSucursalTabla(sucursalTabla);
-}
-
-function cambiarSucursalTabla(s) {
-  sucursalTabla = s;
-  document.getElementById('tab-oa').classList.toggle('activo', s === 'OJO DE AGUA');
-  document.getElementById('tab-sc').classList.toggle('activo', s === 'SAN CRISTOBAL');
-  document.getElementById('tr-buscar').value = '';
-  document.getElementById('tr-fecha').value = '';
-  cargarRemisiones();
-}
-
-function cargarRemisiones() {
-  document.getElementById('tr-vacio').style.display = 'none';
-  document.getElementById('tr-tbody').innerHTML = '<tr><td style="padding:14px">Cargando…</td></tr>';
-  llamarApi('listarRemisiones', { sucursal: sucursalTabla }, function (r) {
-    if (r && r.headers) {
-      datosTablaRemisiones = r;
-      renderTablaRemisiones();
-    } else {
-      document.getElementById('tr-tbody').innerHTML = '';
-      document.getElementById('tr-vacio').style.display = 'block';
-      document.getElementById('tr-vacio').textContent = 'Error: ' + (r && r.error || 'no se pudo cargar.');
-    }
-  });
-}
-
-function renderTablaRemisiones() {
-  var headers = datosTablaRemisiones.headers || [];
-  var thead = document.getElementById('tr-thead-row');
-  thead.innerHTML = '<th>Acciones</th>';
-  headers.forEach(function (h) {
-    var th = document.createElement('th'); th.textContent = h; thead.appendChild(th);
-  });
-  filtrarTablaRemisiones();
-}
-
-/* input[type=date] entrega "yyyy-mm-dd"; FECHA REMISION se guarda como "dd/MM/yyyy" */
-function fechaInputADdMmYyyy(valorInput) {
-  if (!valorInput) return '';
-  var p = valorInput.split('-');
-  return p[2] + '/' + p[1] + '/' + p[0];
-}
-
-function filasFiltradas() {
-  var q = (document.getElementById('tr-buscar').value || '').trim().toUpperCase();
-  var fechaSel = fechaInputADdMmYyyy(document.getElementById('tr-fecha').value);
-  var headers = datosTablaRemisiones.headers || [];
-  var filas = datosTablaRemisiones.filas || [];
-  return filas.filter(function (f) {
-    var pasaTexto = !q || headers.some(function (h) { return String(f[h] || '').toUpperCase().indexOf(q) > -1; });
-    var pasaFecha = !fechaSel || String(f['FECHA REMISION'] || '') === fechaSel;
-    return pasaTexto && pasaFecha;
-  });
-}
-
-function filtrarTablaRemisiones() {
-  var headers = datosTablaRemisiones.headers || [];
-  var filtradas = filasFiltradas();
-
-  var tbody = document.getElementById('tr-tbody');
-  tbody.innerHTML = '';
-  document.getElementById('tr-vacio').style.display = filtradas.length ? 'none' : 'block';
-
-  filtradas.forEach(function (f) {
-    var tr = document.createElement('tr');
-
-    var tdAcc = document.createElement('td');
-    tdAcc.style.whiteSpace = 'nowrap';
-
-    var btnEditar = document.createElement('button');
-    btnEditar.type = 'button';
-    btnEditar.className = 'btn btn-secundario';
-    btnEditar.style.padding = '5px 12px'; btnEditar.style.fontSize = '11px'; btnEditar.style.marginRight = '6px';
-    btnEditar.textContent = 'Editar';
-    btnEditar.onclick = (function (idRem) { return function () { editarRemision(idRem); }; })(f['ID REMISION']);
-    tdAcc.appendChild(btnEditar);
-
-    var btnTicket = document.createElement('button');
-    btnTicket.type = 'button';
-    btnTicket.className = 'btn btn-secundario';
-    btnTicket.style.padding = '5px 12px'; btnTicket.style.fontSize = '11px';
-    btnTicket.textContent = 'Generar Ticket';
-    btnTicket.onclick = (function (idRem, boton) {
-      return function () { generarTicketDesdeTabla(idRem, boton); };
-    })(f['ID REMISION'], btnTicket);
-    tdAcc.appendChild(btnTicket);
-
-    tr.appendChild(tdAcc);
-
-    headers.forEach(function (h) {
-      var td = document.createElement('td');
-      var v = f[h];
-      td.textContent = (v === null || v === undefined) ? '' : v;
-      tr.appendChild(td);
-    });
-    tbody.appendChild(tr);
-  });
-}
-
-function descargarExcelRemisiones() {
-  if (typeof XLSX === 'undefined') {
-    return alert('La librería de Excel todavía se está cargando, espera un segundo e inténtalo de nuevo.');
-  }
-  var headers = datosTablaRemisiones.headers || [];
-  if (!headers.length) return alert('No hay remisiones para descargar.');
-  var filtradas = filasFiltradas();
-  var datosHoja = filtradas.map(function (f) {
-    var obj = {};
-    headers.forEach(function (h) { obj[h] = f[h]; });
-    return obj;
-  });
-  var ws = XLSX.utils.json_to_sheet(datosHoja, { header: headers });
-  var wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, sucursalTabla.substring(0, 28));
-  var nombre = 'Remisiones_' + sucursalTabla.replace(/ /g, '_') + '_' + new Date().toISOString().slice(0, 10) + '.xlsx';
-  XLSX.writeFile(wb, nombre);
-}
-
-/* ── util ─────────────────────────────────────────────── */
-function mostrarMsg(el, texto, ok) {
-  el.textContent = texto;
-  el.className = 'msg ' + (ok ? 'ok' : 'err');
-  el.style.display = 'block';
-}
-
-/* Deshabilita un botón y le pone un texto de "Procesando…" para evitar
-   doble clic mientras corre una llamada al servidor. Devuelve una función
-   para restaurarlo (llamar siempre, tanto en éxito como en error). */
-function ocuparBoton(btnId, textoOcupado) {
-  var btn = document.getElementById(btnId);
-  if (!btn) return function () {};
-  var textoOriginal = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = textoOcupado;
-  return function () {
-    btn.disabled = false;
-    btn.textContent = textoOriginal;
-  };
-}
 </script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
 </body>
 </html>
